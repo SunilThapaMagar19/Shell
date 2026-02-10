@@ -1,85 +1,53 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/v_hRy-0Q)
-## Description
-In this assignment you will write your own shell program, Mav shell (msh), similar to 
-bourne shell (bash), c-shell (csh), or korn shell (ksh). It will accept commands, fork a child 
-process and execute those commands. The shell, like csh or bash, will run and accept 
-commands until the user exits the shell
+# Mav Shell (msh)
 
-## Requirements
+Mav Shell (msh) is a custom Unix-like command-line shell written in C. It mimics core functionality of standard shells such as `bash` and `csh` by accepting user commands, creating child processes, and executing programs using system calls.
 
-1. Your program will print out a prompt of msh> when it is ready to 
-accept input. It must read a line of input and, if the command given is a supported shell 
-command, it shall execute the command and display the output of the command.
+---
 
-<img src="Images/prompt.png" alt="main" width="400"/>
+## Features
+- Displays a custom prompt: `msh>`
+- Executes external commands using `fork()`, `execvp()`, and `wait()`
+- Supports commands from `/bin`, `/usr/bin`, `/usr/local/bin`, and the current directory
+- Implements built-in commands:
+  - `cd` (including `cd ..`)
+  - `exit` / `quit`
+  - `history`
+- Maintains a command history of the **last 50 commands**
+- Allows re-running commands using `!#` syntax
+- Supports **output redirection** using `>`  
+- Supports **piping between two commands** using `|`
+- Handles up to **10 command-line arguments**
+- Blocks `SIGINT` (Ctrl+C) and `SIGTSTP` (Ctrl+Z) signals to prevent shell termination
 
-2. If the command is not supported your shell shall print the invalid 
-command followed by “: Command not found.”
+---
 
-<img src="Images/notfound.png" alt="main" width="400"/>
+## How It Works
+1. The shell prints the `msh>` prompt and waits for user input.
+2. User input is tokenized based on whitespace.
+3. Built-in commands are handled directly within the shell.
+4. External commands are executed by forking a child process and calling `execvp()`.
+5. The parent process waits for the child to complete before displaying the next prompt.
+6. Command history is stored in memory and can be viewed or re-executed.
 
-3. After each command completes, your program shall print the msh>
-prompt and accept another line of input.
+---
 
-4. Your shell will exit with status zero if the command is “quit” or “exit”. 
+## Supported Functionality
 
-5. If the user types a blank line, your shell will, quietly and with no other 
-output, print another prompt and accept a new line of input.
+### Command Execution
+- Executes valid system commands using the `exec` family of functions.
+- Prints an error message for unsupported commands.
 
-<img src="Images/blank.png" alt="main" width="400"/>
+### History
+- Stores up to **50 recent commands**
+- Displays history using the `history` command
+- Re-runs a command using `!<number>`
 
-6. Your version of Mav shell shall support up to 10 command line 
-parameters in addition to the command. 
+## Technologies Used
+- C
+- Linux System Calls
+- `fork()`, `execvp()`, `wait()`
+- Signals (`SIGINT`, `SIGTSTP`)
+- File descriptors and I/O redirection
+- Dynamic memory management
 
-7. Your shell shall support and execute any command entered. Any 
-command in /bin, /usr/bin/, /usr/local/bin/ and the current working directory 
-is to be considered valid for testing.
-
-8. Mav shell shall be implemented using fork(), wait() and one of the 
-exec family of functions. Your Mav shell shall not use system(). Use of system() will result in a grade of 0.
-
-9. Your shell shall support the cd command to change directories. Your 
-shell must handle cd ..
-
-<img src="Images/cd.png" alt="main" width="400"/>
-
-10. Your shell shall  save the last 50 commands and command line parameters
-
-11. You shall print the history log, excluding blank line entries when the user types history
-   
-```
-msh> history
-[1] ls
-[2] mkdir foo
-[3] cd foo
-[4] cd ..
-[5] history
-``` 
-
-12. The user can re-run any commnd in the history by typing !# where # is the number of the command to rerun.
-
-13. Your shell shall support redirection.  The syntax [process] > [file] tells your shell to redirect the process’s standard output to a file. 
-
-You do not need to support redirection for shell built-in commands. You do not need to support stderr redirection or appending to files (e.g. [process] >> [file]). You can assume that there will always be spaces around special characters < and >.  See popen.c in [Code-Examples](https://github.com/CSE3320-Spring-2025/Code-Examples)
-
-15. Your shell shall support pipes between programs. You can assume there will always be spaces around the special character | . See pipe.c in [Code-Examples](https://github.com/CSE3320-Spring-2025/Code-Examples)
-
-16. Your program shall block the SIGINT and SIGTSTP signals. See sigint.c in [Code-Examples](https://github.com/CSE3320-Spring-2025/Code-Examples)
-        
-17. Tabs or spaces shall be used to indent the code. Your code must use 
-one or the other. All indentation must be consistent.
-
-18. No line of code shall exceed 100 characters. 
-
-19. All code must be well commented. This means descriptive comments 
-that tell the intent of the code, not just what the code is executing. 
-
-20. Keep your curly brace placement consistent. If you place curly braces 
-on a new line , always place curly braces on a new end. Don’t mix end line brace 
-placement with new line brace placement. 
-   
-21. Remove all extraneous debug output before submission. The only 
-output shall be the output of the commands entered or the shell prompt. 
-   
-
-
+---
